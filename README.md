@@ -1,6 +1,6 @@
 # finance
 
-A Flutter project for calculate Simple interest, Compound Interest, GST, Home Loan, Car & Bike Loan, EMI, Recurring Deposit, Fixed Deposit, SIP, Lumpsum, SWP and PPF.
+A Flutter project to calculate Simple interest, Compound Interest, GST, Home Loan, Car & Bike Loan, EMI, Recurring Deposit, Fixed Deposit, SIP, Lumpsum, SWP and PPF.
 
 ## Getting Started
 
