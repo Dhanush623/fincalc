@@ -1,4 +1,4 @@
-# finance
+# FinCalc
 
 A Flutter project to calculate Simple interest, Compound Interest, GST, Home Loan, Car & Bike Loan, EMI, Recurring Deposit, Fixed Deposit, SIP, Lumpsum, SWP and PPF.
 
@@ -14,3 +14,12 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+# Coding Structure 
+
+    Screens
+        1. All calculation screen load from constants
+
+    Widgets
+        1. All slider are reused from customer_slider
+    
