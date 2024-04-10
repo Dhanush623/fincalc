@@ -2,7 +2,9 @@ import 'package:finance/src/helper/number_range_helper.dart';
 import 'package:finance/src/models/card_item.dart';
 import 'package:finance/src/utils/constants.dart';
 import 'package:finance/src/widgets/custom_slider.dart';
+import 'package:finance/src/widgets/custom_text_field.dart';
 import 'package:finance/src/widgets/info_card.dart';
+import 'package:finance/src/widgets/spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -37,10 +39,18 @@ class _GSTState extends State<GST> {
     calculate();
   }
 
+  setDefault() {
+    setState(() {
+      dataMap[Constants.principalAmount] = 0;
+      dataMap[Constants.totalInterest] = 0;
+    });
+  }
+
   calculate() {
-    debugPrint("Amount  ${amountController.text}");
-    debugPrint("Gst Percentage  ${totalGstPercentage.text}");
-    debugPrint("Gst type  $_gstValue");
+    if (totalGstPercentage.text.isEmpty || amountController.text.isEmpty) {
+      setDefault();
+      return true;
+    }
     if (_gstValue == Constants.gstExclusive) {
       double gst = (double.parse(amountController.text) *
               double.parse(totalGstPercentage.text)) /
@@ -67,45 +77,40 @@ class _GSTState extends State<GST> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                Constants.totalAmount,
-                style: TextStyle(fontSize: 16),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _currentSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(() {
+                  _currentSliderValue = double.parse(value);
+                });
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(
+                RegExp(r'^\d+\.?\d{0,2}'),
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: amountController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,2}')),
-                    NumericRangeFormatter(
-                      min: Constants.minAvailablePrincipal.toInt(),
-                      max: Constants.maxAvailablePrincipal.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(() {
-                        _currentSliderValue = double.parse(value);
-                      });
-                    }
-                    calculate();
-                  },
-                ),
+              NumericRangeFormatter(
+                min: Constants.minValue.toInt(),
+                max: Constants.maxAvailablePrincipal.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: amountController,
+            label: Constants.totalAmount,
+            hint: Constants.enterTotalAmount,
           ),
+          spacer(5, null),
           CustomSlider(
             value: _currentSliderValue,
-            min: Constants.minAvailablePrincipal,
+            min: Constants.minValue,
             max: Constants.maxAvailablePrincipal,
             divisions: Constants.amountSliderDivision,
             label: _currentSliderValue.round().toString(),
@@ -117,42 +122,38 @@ class _GSTState extends State<GST> {
               calculate();
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                Constants.gstSlab,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: totalGstPercentage,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                    NumericRangeFormatter(
-                      min: Constants.minTotalYear.toInt(),
-                      max: Constants.maxTotalYear.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(
-                        () {
-                          _totalYearSliderValue = double.parse(value);
-                        },
-                      );
-                    }
-                    calculate();
+          spacer(10, null),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _totalYearSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(
+                  () {
+                    _totalYearSliderValue = double.parse(value);
                   },
-                ),
+                );
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly,
+              NumericRangeFormatter(
+                min: Constants.minTotalYear.toInt(),
+                max: Constants.maxTotalYear.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: totalGstPercentage,
+            label: Constants.gstSlab,
+            hint: Constants.enterGSTSlab,
           ),
+          spacer(5, null),
           CustomSlider(
             value: _totalYearSliderValue,
             min: Constants.minTotalYear,
@@ -176,8 +177,6 @@ class _GSTState extends State<GST> {
                 value: Constants.gstExclusive,
                 groupValue: _gstValue,
                 onChanged: (String? value) {
-                  debugPrint("value $value");
-                  debugPrint("_gstValue $_gstValue");
                   setState(() {
                     _gstValue = value.toString();
                   });
@@ -193,8 +192,6 @@ class _GSTState extends State<GST> {
                 value: Constants.gstInclusive,
                 groupValue: _gstValue,
                 onChanged: (String? value) {
-                  debugPrint("value $value");
-                  debugPrint("_gstValue $_gstValue");
                   setState(() {
                     _gstValue = value.toString();
                   });
