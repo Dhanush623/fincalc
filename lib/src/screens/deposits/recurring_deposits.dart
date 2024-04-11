@@ -230,27 +230,32 @@ class _RecurringDepositState extends State<RecurringDeposit> {
             },
           ),
           spacer(5, null),
-          if (_currentSliderValue != 0.0)
-            InfoCard(
-              list: [
-                CardItem(
-                  key: Constants.investmentAmount,
-                  value: _totalPrincipal,
+          if (_currentSliderValue != 0.0 &&
+              _rateOfInterestSliderValue != 0.0 &&
+              _totalYearSliderValue != 0.0)
+            Column(
+              children: [
+                InfoCard(
+                  list: [
+                    CardItem(
+                      key: Constants.investmentAmount,
+                      value: _totalPrincipal,
+                    ),
+                    CardItem(
+                      key: Constants.returnAmount,
+                      value: _totalEstAmount,
+                    ),
+                    CardItem(
+                      key: Constants.totalAmount,
+                      value: _totalAmount,
+                    ),
+                  ],
                 ),
-                CardItem(
-                  key: Constants.returnAmount,
-                  value: _totalEstAmount,
-                ),
-                CardItem(
-                  key: Constants.totalAmount,
-                  value: _totalAmount,
+                const SpacingCard(),
+                AmountChart(
+                  dataMap: dataMap,
                 ),
               ],
-            ),
-          const SpacingCard(),
-          if (_currentSliderValue != 0.0)
-            AmountChart(
-              dataMap: dataMap,
             ),
         ],
       ),

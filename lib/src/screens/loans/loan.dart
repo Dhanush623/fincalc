@@ -211,24 +211,30 @@ class _LoanState extends State<Loan> {
             },
           ),
           spacer(5, null),
-          if (_currentSliderValue != 0.0)
-            InfoCard(
-              list: [
-                CardItem(
-                  key: Constants.principalAmount,
-                  value: _totalPrincipal,
-                ),
-                CardItem(
-                  key: Constants.totalInterest,
-                  value: _totalInterest,
-                ),
-                CardItem(
-                  key: Constants.monthlyEMI,
-                  value: _monthlyEMI,
-                ),
-                CardItem(
-                  key: Constants.totalAmount,
-                  value: _totalAmount,
+          if (_currentSliderValue != 0.0 &&
+              _rateOfInterestSliderValue != 0.0 &&
+              _totalYearSliderValue != 0.0)
+            Column(
+              children: [
+                InfoCard(
+                  list: [
+                    CardItem(
+                      key: Constants.principalAmount,
+                      value: _totalPrincipal,
+                    ),
+                    CardItem(
+                      key: Constants.totalInterest,
+                      value: _totalInterest,
+                    ),
+                    CardItem(
+                      key: Constants.monthlyEMI,
+                      value: _monthlyEMI,
+                    ),
+                    CardItem(
+                      key: Constants.totalAmount,
+                      value: _totalAmount,
+                    ),
+                  ],
                 ),
               ],
             ),

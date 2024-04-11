@@ -241,27 +241,33 @@ class _CompoundInterestState extends State<CompoundInterest> {
             labelText: Constants.compoundingFrequency,
           ),
           spacer(5, null),
-          if (_currentSliderValue != 0.0)
-            InfoCard(
-              list: [
-                CardItem(
-                  key: Constants.principalAmount,
-                  value: double.parse(amountController.text),
+          if (_currentSliderValue != 0.0 &&
+              _rateOfInterestSliderValue != 0.0 &&
+              _totalYearSliderValue != 0.0)
+            Column(
+              children: [
+                InfoCard(
+                  list: [
+                    CardItem(
+                      key: Constants.principalAmount,
+                      value: double.parse(amountController.text),
+                    ),
+                    CardItem(
+                      key: Constants.totalInterest,
+                      value:
+                          _totalInterest - double.parse(amountController.text),
+                    ),
+                    CardItem(
+                      key: Constants.totalAmount,
+                      value: _totalInterest,
+                    ),
+                  ],
                 ),
-                CardItem(
-                  key: Constants.totalInterest,
-                  value: _totalInterest - double.parse(amountController.text),
-                ),
-                CardItem(
-                  key: Constants.totalAmount,
-                  value: _totalInterest,
+                const SpacingCard(),
+                AmountChart(
+                  dataMap: dataMap,
                 ),
               ],
-            ),
-          const SpacingCard(),
-          if (_currentSliderValue != 0.0)
-            AmountChart(
-              dataMap: dataMap,
             ),
         ],
       ),

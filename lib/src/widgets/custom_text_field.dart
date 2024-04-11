@@ -27,11 +27,21 @@ class CustomTextInput extends StatelessWidget {
       decoration: InputDecoration(
         label: Text(label),
         hintText: hint,
+        labelStyle: const TextStyle(
+          color: Color(0xFF01579B),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25.0),
+          borderSide: const BorderSide(
+            color: Color(0xFF01579B),
+          ),
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25.0),
           borderSide: const BorderSide(),
         ),
       ),
+      cursorColor: const Color(0xFF01579B),
       enabled: enabled,
       keyboardType: textInputType,
       inputFormatters: inputFormatter,

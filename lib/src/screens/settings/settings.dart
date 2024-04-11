@@ -121,6 +121,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
             ),
             trailing: Switch(
               value: isDarkTheme,
+              activeColor: const Color(0xFF01579B),
               onChanged: (bool value) {
                 Provider.of<ThemeManager>(context, listen: false).toggleTheme();
                 saveData(
@@ -140,6 +141,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
               style: TextStyle(fontSize: 18),
             ),
             trailing: Switch(
+              activeColor: const Color(0xFF01579B),
               value: isNotification,
               onChanged: (bool value) {
                 changeNotificationPermission();

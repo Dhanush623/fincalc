@@ -28,8 +28,17 @@ class CustomDropdown extends StatelessWidget {
             25.0,
           ),
         ),
+        labelStyle: const TextStyle(
+          color: Color(0xFF01579B),
+        ),
         hintText: hintText,
         labelText: labelText,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25.0),
+          borderSide: const BorderSide(
+            color: Color(0xFF01579B),
+          ),
+        ),
       ),
       value: selectedValue,
       onChanged: (String? newValue) {

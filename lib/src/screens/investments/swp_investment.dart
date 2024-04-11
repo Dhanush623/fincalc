@@ -281,20 +281,27 @@ class _SWPInvestmentState extends State<SWPInvestment> {
             },
           ),
           spacer(5, null),
-          if (_currentSliderValue != 0.0)
-            InfoCard(
-              list: [
-                CardItem(
-                  key: Constants.investmentAmount,
-                  value: double.parse(amountController.text),
-                ),
-                CardItem(
-                  key: Constants.withdrawnAmount,
-                  value: _withdrawn,
-                ),
-                CardItem(
-                  key: Constants.totalAmount,
-                  value: _totalAmount,
+          if (_currentSliderValue != 0.0 &&
+              _rateOfInterestSliderValue != 0.0 &&
+              _withdrawnSliderValue != 0.0 &&
+              _totalYearSliderValue != 0.0)
+            Column(
+              children: [
+                InfoCard(
+                  list: [
+                    CardItem(
+                      key: Constants.investmentAmount,
+                      value: double.parse(amountController.text),
+                    ),
+                    CardItem(
+                      key: Constants.withdrawnAmount,
+                      value: _withdrawn,
+                    ),
+                    CardItem(
+                      key: Constants.totalAmount,
+                      value: _totalAmount,
+                    ),
+                  ],
                 ),
               ],
             ),

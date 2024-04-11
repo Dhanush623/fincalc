@@ -201,18 +201,23 @@ class _GSTState extends State<GST> {
               const Text(Constants.gstInclusive),
             ],
           ),
-          InfoCard(
-            list: [
-              CardItem(
-                key: Constants.amount,
-                value: _totalAmount,
-              ),
-              CardItem(
-                key: Constants.gst,
-                value: _totalGST,
-              ),
-            ],
-          ),
+          if (_currentSliderValue != 0.0 && _totalYearSliderValue != 0.0)
+            Column(
+              children: [
+                InfoCard(
+                  list: [
+                    CardItem(
+                      key: Constants.amount,
+                      value: _totalAmount,
+                    ),
+                    CardItem(
+                      key: Constants.gst,
+                      value: _totalGST,
+                    ),
+                  ],
+                ),
+              ],
+            ),
         ],
       ),
     );

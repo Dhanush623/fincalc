@@ -223,27 +223,33 @@ class _SimpleInterestState extends State<SimpleInterest> {
               calculate();
             },
           ),
-          if (_currentSliderValue != 0.0)
-            InfoCard(
-              list: [
-                CardItem(
-                  key: Constants.principalAmount,
-                  value: double.parse(amountController.text),
+          if (_currentSliderValue != 0.0 &&
+              _rateOfInterestSliderValue != 0.0 &&
+              _totalYearSliderValue != 0.0)
+            Column(
+              children: [
+                InfoCard(
+                  list: [
+                    CardItem(
+                      key: Constants.principalAmount,
+                      value: double.parse(amountController.text),
+                    ),
+                    CardItem(
+                      key: Constants.totalInterest,
+                      value: _totalInterest,
+                    ),
+                    CardItem(
+                      key: Constants.totalAmount,
+                      value:
+                          double.parse(amountController.text) + _totalInterest,
+                    ),
+                  ],
                 ),
-                CardItem(
-                  key: Constants.totalInterest,
-                  value: _totalInterest,
-                ),
-                CardItem(
-                  key: Constants.totalAmount,
-                  value: double.parse(amountController.text) + _totalInterest,
+                const SpacingCard(),
+                AmountChart(
+                  dataMap: dataMap,
                 ),
               ],
-            ),
-          const SpacingCard(),
-          if (_currentSliderValue != 0.0)
-            AmountChart(
-              dataMap: dataMap,
             ),
         ],
       ),
