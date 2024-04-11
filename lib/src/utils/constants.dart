@@ -15,6 +15,9 @@ import 'package:flutter/material.dart';
 class Constants {
   static const String finCalc = "FinCalc";
   static const String settings = "Settings";
+  static const String dashboard = "Dashboard";
+  static const String screen = "Screen";
+  static const String button = "Button";
   static const String darkTheme = "Dark Theme";
   static const String notifications = "Notifications";
   static const String cagr = "CAGR";
@@ -23,6 +26,7 @@ class Constants {
   static const String homeLoanEMI = "Home Loan EMI";
   static const String gst = "GST";
   static const String gstSlab = "GST Slab";
+  static const String enterGSTSlab = "Enter GST Slab";
   static const String gstExclusive = "GST Exclusive";
   static const String gstInclusive = "GST Inclusive";
   static const String ppf = "PPF";
@@ -40,20 +44,31 @@ class Constants {
   static const String deposit = "Deposit";
   static const String investment = "Investment";
   static const String investmentAmount = "Investment Amount";
+  static const String enterInvestmentAmount = "Enter Investment Amount";
   static const String principalAmount = "Principal Amount";
+  static const String enterPrincipalAmount = "Enter Principal Amount";
   static const String yearlyAmount = "Yearly Amount";
+  static const String enterYearlyAmount = "Enter Yearly Amount";
   static const String rateOfInterest = "Rate of Interest(%p.a)";
+  static const String enterRateOfInterest = "Enter Rate of Interest(%p.a)";
   static const String timePeriod = "Time Period (yr)";
+  static const String enterTimePeriod = "Enter Time Period in years";
   static const String totalInterest = "Total Interest";
   static const String totalAmount = "Total Amount";
+  static const String enterTotalAmount = "Enter Total Amount";
   static const String withdrawnAmount = "Withdrawn Amount";
+  static const String enterWithdrawnAmount = "Enter Withdrawn Amount";
   static const String estAmount = "Estimation Amount";
   static const String amount = "Amount";
   static const String returnAmount = "Return Amount";
   static const String compoundingFrequency = "Compounding Frequency";
+  static const String selectCompoundingFrequency =
+      "Select Compounding Frequency";
   static const String loanTenure = "Loan Tenure (yr)";
+  static const String enterLoanTenure = "Enter Loan Tenure Year";
   static const String monthlyEMI = "Monthly EMI";
   static const String monthlyAmount = "Monthly Amount";
+  static const String enterMonthlyAmount = "Enter Monthly Amount";
   static const String selectedTheme = "themeData";
   static const String copyrightLabel = "Copyright © ";
   static const String firebaseEventKey = "page";
@@ -61,10 +76,12 @@ class Constants {
   static const String firebaseScreenViewKey = "screen_view";
   static const String channelId = "default";
   static const String channelName = "default";
+  static const double minValue = 0;
   static const double maxAvailablePrincipal = 10000000;
-  static const double minAvailablePrincipal = 1000;
+  static const double minAvailablePrincipal = 0;
   static const double initAvailablePrincipal = 100000;
-  static const double ppfInitAvailablePrincipal = 500;
+  static const double ppfInitAvailablePrincipal = 1000;
+  static const double ppfMinAvailablePrincipal = 0;
   static const double withdrawnAmountLimit = 10000;
   static const double minInitRateOfInterest = 1;
   static const double initRateOfInterest = 6;
@@ -79,7 +96,7 @@ class Constants {
   static const double maxTotalYearTen = 10;
   static const double ppfMaxTotalYear = 50;
   static const double minTotalYear = 1;
-  static const int amountSliderDivision = 1000;
+  static const int amountSliderDivision = 10000;
   static const int totalYearDivision = 29;
   static const int totalYearDivisionInvestment = 49;
   static List<Category> categoryList = [

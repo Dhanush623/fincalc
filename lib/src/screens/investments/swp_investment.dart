@@ -2,7 +2,9 @@ import 'package:finance/src/helper/number_range_helper.dart';
 import 'package:finance/src/models/card_item.dart';
 import 'package:finance/src/utils/constants.dart';
 import 'package:finance/src/widgets/custom_slider.dart';
+import 'package:finance/src/widgets/custom_text_field.dart';
 import 'package:finance/src/widgets/info_card.dart';
+import 'package:finance/src/widgets/spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
@@ -48,11 +50,24 @@ class _SWPInvestmentState extends State<SWPInvestment> {
     calculate();
   }
 
+  setDefault() {
+    setState(() {
+      dataMap[Constants.investmentAmount] = 0;
+      dataMap[Constants.estAmount] = 0;
+    });
+  }
+
   calculate() {
+    if (rateOfInterestController.text.isEmpty ||
+        withdrawnAmountController.text.isEmpty ||
+        totalYearController.text.isEmpty ||
+        amountController.text.isEmpty) {
+      setDefault();
+      return true;
+    }
     double amount = double.parse(amountController.text);
     double duration = double.parse(totalYearController.text);
     double rateOfReturn = double.parse(rateOfInterestController.text);
-    // double r = rateOfReturn / 100 / 12;
     double withdraw = double.parse(withdrawnAmountController.text);
 
     maturityAmount = ((amount * math.pow((1 + rateOfReturn / 100), duration)) -
@@ -62,10 +77,6 @@ class _SWPInvestmentState extends State<SWPInvestment> {
                 1) /
             (math.pow((1 + rateOfReturn / 100), (1 / 12)) - 1)));
     double withdrawn = duration * 12 * withdraw;
-    debugPrint("maturityAmount $maturityAmount");
-    debugPrint(
-        "_totalPrincipal ${double.parse(amountController.text) * double.parse(totalYearController.text)}");
-    debugPrint("withdrawn $withdrawn");
     setState(() {
       _totalAmount = maturityAmount;
       _withdrawn = withdrawn;
@@ -91,45 +102,37 @@ class _SWPInvestmentState extends State<SWPInvestment> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                Constants.monthlyAmount,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: amountController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,2}')),
-                    NumericRangeFormatter(
-                      min: Constants.ppfInitAvailablePrincipal.toInt(),
-                      max: Constants.maxAvailablePrincipal.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(() {
-                        _currentSliderValue = double.parse(value);
-                      });
-                    }
-                    calculate();
-                  },
-                ),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _currentSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(() {
+                  _currentSliderValue = double.parse(value);
+                });
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              NumericRangeFormatter(
+                min: Constants.ppfMinAvailablePrincipal.toInt(),
+                max: Constants.maxAvailablePrincipal.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: amountController,
+            label: Constants.monthlyAmount,
+            hint: Constants.enterMonthlyAmount,
           ),
           CustomSlider(
             value: _currentSliderValue,
-            min: Constants.ppfInitAvailablePrincipal,
+            min: Constants.ppfMinAvailablePrincipal,
             max: Constants.maxAvailablePrincipal,
             divisions: Constants.amountSliderDivision,
             label: _currentSliderValue.round().toString(),
@@ -141,45 +144,38 @@ class _SWPInvestmentState extends State<SWPInvestment> {
               calculate();
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                Constants.withdrawnAmount,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: withdrawnAmountController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,2}')),
-                    NumericRangeFormatter(
-                      min: Constants.ppfInitAvailablePrincipal.toInt(),
-                      max: Constants.maxAvailablePrincipal.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(() {
-                        _withdrawnSliderValue = double.parse(value);
-                      });
-                    }
-                    calculate();
-                  },
-                ),
+          spacer(5, null),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _withdrawnSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(() {
+                  _withdrawnSliderValue = double.parse(value);
+                });
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              NumericRangeFormatter(
+                min: Constants.ppfMinAvailablePrincipal.toInt(),
+                max: Constants.maxAvailablePrincipal.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: withdrawnAmountController,
+            label: Constants.withdrawnAmount,
+            hint: Constants.enterWithdrawnAmount,
           ),
           CustomSlider(
             value: _withdrawnSliderValue,
-            min: Constants.ppfInitAvailablePrincipal,
+            min: Constants.ppfMinAvailablePrincipal,
             max: Constants.maxAvailablePrincipal,
             divisions: Constants.amountSliderDivision,
             label: _withdrawnSliderValue.round().toString(),
@@ -191,32 +187,34 @@ class _SWPInvestmentState extends State<SWPInvestment> {
               calculate();
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                Constants.rateOfInterest,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: rateOfInterestController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,1}')),
-                    NumericRangeFormatter(
-                      min: Constants.minInitRateOfInterest.toInt(),
-                      max: Constants.maxRateOfInterest.toInt(),
-                    ),
-                  ],
-                ),
+          spacer(5, null),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _rateOfInterestSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(() {
+                  _rateOfInterestSliderValue = double.parse(value);
+                });
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}')),
+              NumericRangeFormatter(
+                min: Constants.minInitRateOfInterest.toInt(),
+                max: Constants.maxRateOfInterest.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: rateOfInterestController,
+            label: Constants.rateOfInterest,
+            hint: Constants.enterRateOfInterest,
           ),
           CustomSlider(
             value: _rateOfInterestSliderValue,
@@ -234,41 +232,36 @@ class _SWPInvestmentState extends State<SWPInvestment> {
               calculate();
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                Constants.timePeriod,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: totalYearController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                    NumericRangeFormatter(
-                      min: Constants.minInitTotalYear.toInt(),
-                      max: Constants.ppfMaxTotalYear.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(
-                        () {
-                          _totalYearSliderValue = double.parse(value);
-                        },
-                      );
-                    }
-                    calculate();
+          spacer(5, null),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _totalYearSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(
+                  () {
+                    _totalYearSliderValue = double.parse(value);
                   },
-                ),
+                );
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly,
+              NumericRangeFormatter(
+                min: Constants.minInitTotalYear.toInt(),
+                max: Constants.ppfMaxTotalYear.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: totalYearController,
+            label: Constants.timePeriod,
+            hint: Constants.enterTimePeriod,
           ),
           CustomSlider(
             value: _totalYearSliderValue,
@@ -287,22 +280,31 @@ class _SWPInvestmentState extends State<SWPInvestment> {
               calculate();
             },
           ),
-          InfoCard(
-            list: [
-              CardItem(
-                key: Constants.investmentAmount,
-                value: double.parse(amountController.text),
-              ),
-              CardItem(
-                key: Constants.withdrawnAmount,
-                value: _withdrawn,
-              ),
-              CardItem(
-                key: Constants.totalAmount,
-                value: _totalAmount,
-              ),
-            ],
-          ),
+          spacer(5, null),
+          if (_currentSliderValue != 0.0 &&
+              _rateOfInterestSliderValue != 0.0 &&
+              _withdrawnSliderValue != 0.0 &&
+              _totalYearSliderValue != 0.0)
+            Column(
+              children: [
+                InfoCard(
+                  list: [
+                    CardItem(
+                      key: Constants.investmentAmount,
+                      value: double.parse(amountController.text),
+                    ),
+                    CardItem(
+                      key: Constants.withdrawnAmount,
+                      value: _withdrawn,
+                    ),
+                    CardItem(
+                      key: Constants.totalAmount,
+                      value: _totalAmount,
+                    ),
+                  ],
+                ),
+              ],
+            ),
         ],
       ),
     );

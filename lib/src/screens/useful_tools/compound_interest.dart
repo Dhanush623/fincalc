@@ -1,10 +1,13 @@
 import 'package:finance/src/helper/frequency_helper.dart';
 import 'package:finance/src/helper/number_range_helper.dart';
 import 'package:finance/src/models/card_item.dart';
-import 'package:finance/src/utils/Constants.dart';
+import 'package:finance/src/utils/constants.dart';
 import 'package:finance/src/widgets/amount_chart.dart';
+import 'package:finance/src/widgets/custom_dropdown.dart';
 import 'package:finance/src/widgets/custom_slider.dart';
+import 'package:finance/src/widgets/custom_text_field.dart';
 import 'package:finance/src/widgets/info_card.dart';
+import 'package:finance/src/widgets/spacer.dart';
 import 'package:finance/src/widgets/spacing_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +33,7 @@ class _CompoundInterestState extends State<CompoundInterest> {
     Constants.principalAmount: 0,
     Constants.totalInterest: 0,
   };
+
   @override
   void initState() {
     super.initState();
@@ -43,13 +47,21 @@ class _CompoundInterestState extends State<CompoundInterest> {
     calculate();
   }
 
+  setDefault() {
+    setState(() {
+      dataMap[Constants.principalAmount] = 0;
+      dataMap[Constants.totalInterest] = 0;
+      _totalInterest = 0.0;
+    });
+  }
+
   calculate() {
-    debugPrint(amountController.text);
-    debugPrint(rateOfInterestController.text);
-    debugPrint(totalYearController.text);
-    debugPrint(selectedFrequency);
-    debugPrint(findValueByKey(Constants.popList, selectedFrequency).toString());
-    debugPrint(dataMap.toString());
+    if (rateOfInterestController.text.isEmpty ||
+        totalYearController.text.isEmpty ||
+        amountController.text.isEmpty) {
+      setDefault();
+      return true;
+    }
     int frequency = findValueByKey(Constants.popList, selectedFrequency);
     double principalAmount = double.parse(amountController.text) *
         frequency *
@@ -62,15 +74,11 @@ class _CompoundInterestState extends State<CompoundInterest> {
         (principalAmount / (principalAmount + finalAmount)) * 100;
     double interestPercentage =
         (finalAmount / (principalAmount + finalAmount)) * 100;
-
-    debugPrint("finalAmount $finalAmount");
-
     setState(() {
       dataMap[Constants.totalInterest] = interestPercentage;
       dataMap[Constants.principalAmount] = principalPercentage;
       _totalInterest = finalAmount;
     });
-    debugPrint(dataMap.toString());
   }
 
   @override
@@ -80,41 +88,33 @@ class _CompoundInterestState extends State<CompoundInterest> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                Constants.principalAmount,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: amountController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,2}')),
-                    NumericRangeFormatter(
-                      min: Constants.minAvailablePrincipal.toInt(),
-                      max: Constants.maxAvailablePrincipal.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(() {
-                        _currentSliderValue = double.parse(value);
-                      });
-                    }
-                    calculate();
-                  },
-                ),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _currentSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(() {
+                  _currentSliderValue = double.parse(value);
+                });
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              NumericRangeFormatter(
+                min: Constants.minAvailablePrincipal.toInt(),
+                max: Constants.maxAvailablePrincipal.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: amountController,
+            label: Constants.principalAmount,
+            hint: Constants.enterPrincipalAmount,
           ),
           CustomSlider(
             value: _currentSliderValue,
@@ -130,43 +130,36 @@ class _CompoundInterestState extends State<CompoundInterest> {
               calculate();
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                Constants.rateOfInterest,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: rateOfInterestController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,1}')),
-                    NumericRangeFormatter(
-                      min: Constants.minRateOfInterest.toInt(),
-                      max: Constants.maxRateOfInterest.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(
-                        () {
-                          _rateOfInterestSliderValue = double.parse(value);
-                        },
-                      );
-                    }
-                    calculate();
+          spacer(5, null),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _rateOfInterestSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(
+                  () {
+                    _rateOfInterestSliderValue = double.parse(value);
                   },
-                ),
+                );
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}')),
+              NumericRangeFormatter(
+                min: Constants.minRateOfInterest.toInt(),
+                max: Constants.maxRateOfInterest.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: rateOfInterestController,
+            label: Constants.rateOfInterest,
+            hint: Constants.enterRateOfInterest,
           ),
           CustomSlider(
             value: _rateOfInterestSliderValue,
@@ -184,41 +177,36 @@ class _CompoundInterestState extends State<CompoundInterest> {
               calculate();
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                Constants.timePeriod,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: totalYearController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                    NumericRangeFormatter(
-                      min: Constants.minTotalYear.toInt(),
-                      max: Constants.maxTotalYear.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(
-                        () {
-                          _totalYearSliderValue = double.parse(value);
-                        },
-                      );
-                    }
-                    calculate();
+          spacer(5, null),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _totalYearSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(
+                  () {
+                    _totalYearSliderValue = double.parse(value);
                   },
-                ),
+                );
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly,
+              NumericRangeFormatter(
+                min: Constants.minTotalYear.toInt(),
+                max: Constants.maxTotalYear.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: totalYearController,
+            label: Constants.timePeriod,
+            hint: Constants.enterTimePeriod,
           ),
           CustomSlider(
             value: _totalYearSliderValue,
@@ -237,55 +225,50 @@ class _CompoundInterestState extends State<CompoundInterest> {
               calculate();
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                Constants.compoundingFrequency,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .3,
-                height: 50,
-                child: DropdownButton<String>(
-                  value: selectedFrequency,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedFrequency = newValue!;
-                    });
-                    calculate();
-                  },
-                  items: Constants.list.map<DropdownMenuItem<String>>(
-                      (Map<String, dynamic> item) {
-                    return DropdownMenuItem<String>(
-                      value: item['key'],
-                      child: Text(item['key']),
-                    );
-                  }).toList(),
+          spacer(5, null),
+          CustomDropdown(
+            selectedValue: selectedFrequency,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedFrequency = newValue!;
+              });
+              calculate();
+            },
+            listKey: "key",
+            listValue: "key",
+            dropdownList: Constants.list,
+            hintText: Constants.selectCompoundingFrequency,
+            labelText: Constants.compoundingFrequency,
+          ),
+          spacer(5, null),
+          if (_currentSliderValue != 0.0 &&
+              _rateOfInterestSliderValue != 0.0 &&
+              _totalYearSliderValue != 0.0)
+            Column(
+              children: [
+                InfoCard(
+                  list: [
+                    CardItem(
+                      key: Constants.principalAmount,
+                      value: double.parse(amountController.text),
+                    ),
+                    CardItem(
+                      key: Constants.totalInterest,
+                      value:
+                          _totalInterest - double.parse(amountController.text),
+                    ),
+                    CardItem(
+                      key: Constants.totalAmount,
+                      value: _totalInterest,
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          InfoCard(
-            list: [
-              CardItem(
-                key: Constants.principalAmount,
-                value: double.parse(amountController.text),
-              ),
-              CardItem(
-                key: Constants.totalInterest,
-                value: _totalInterest - double.parse(amountController.text),
-              ),
-              CardItem(
-                key: Constants.totalAmount,
-                value: _totalInterest,
-              ),
-            ],
-          ),
-          const SpacingCard(),
-          AmountChart(
-            dataMap: dataMap,
-          ),
+                const SpacingCard(),
+                AmountChart(
+                  dataMap: dataMap,
+                ),
+              ],
+            ),
         ],
       ),
     );

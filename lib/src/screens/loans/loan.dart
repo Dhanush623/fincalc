@@ -2,7 +2,9 @@ import 'package:finance/src/helper/number_range_helper.dart';
 import 'package:finance/src/models/card_item.dart';
 import 'package:finance/src/utils/constants.dart';
 import 'package:finance/src/widgets/custom_slider.dart';
+import 'package:finance/src/widgets/custom_text_field.dart';
 import 'package:finance/src/widgets/info_card.dart';
+import 'package:finance/src/widgets/spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
@@ -26,10 +28,6 @@ class _LoanState extends State<Loan> {
   TextEditingController amountController = TextEditingController();
   TextEditingController rateOfInterestController = TextEditingController();
   TextEditingController totalYearController = TextEditingController();
-  Map<String, double> dataMap = <String, double>{
-    Constants.totalInterest: 0,
-    Constants.totalAmount: 0,
-  };
   @override
   void initState() {
     super.initState();
@@ -44,6 +42,12 @@ class _LoanState extends State<Loan> {
   }
 
   calculate() {
+    if (rateOfInterestController.text.isEmpty ||
+        totalYearController.text.isEmpty ||
+        amountController.text.isEmpty) {
+      return true;
+    }
+
     double monthlyPayment = 0.0;
     double monthlyInterestRate =
         double.parse(rateOfInterestController.text) / 12 / 100;
@@ -54,21 +58,12 @@ class _LoanState extends State<Loan> {
     monthlyPayment =
         double.parse(amountController.text) * (numerator / denominator);
     double totInt = monthlyPayment * totalPayments;
-    double totInte = totInt - double.parse(amountController.text);
-    double principalPercentage = (totInt / (totInt + totInte)) * 100;
-    double interestPercentage = (totInte / (totInt + totInte)) * 100;
     setState(() {
       _totalPrincipal = double.parse(amountController.text);
       _monthlyEMI = monthlyPayment;
       _totalAmount = totInt;
-      _totalInterest = totInte;
-      dataMap[Constants.totalInterest] = interestPercentage;
-      dataMap[Constants.totalAmount] = principalPercentage;
+      _totalInterest = totInt - double.parse(amountController.text);
     });
-    debugPrint("_totalPrincipal $_totalPrincipal");
-    debugPrint("_monthlyEMI $_monthlyEMI");
-    debugPrint("_totalAmount $_totalAmount");
-    debugPrint("_totalInterest $_totalInterest");
   }
 
   @override
@@ -78,41 +73,33 @@ class _LoanState extends State<Loan> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                Constants.principalAmount,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: amountController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,2}')),
-                    NumericRangeFormatter(
-                      min: Constants.minAvailablePrincipal.toInt(),
-                      max: Constants.maxAvailablePrincipal.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(() {
-                        _currentSliderValue = double.parse(value);
-                      });
-                    }
-                    calculate();
-                  },
-                ),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _currentSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(() {
+                  _currentSliderValue = double.parse(value);
+                });
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              NumericRangeFormatter(
+                min: Constants.minAvailablePrincipal.toInt(),
+                max: Constants.maxAvailablePrincipal.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: amountController,
+            label: Constants.principalAmount,
+            hint: Constants.enterPrincipalAmount,
           ),
           CustomSlider(
             value: _currentSliderValue,
@@ -128,43 +115,36 @@ class _LoanState extends State<Loan> {
               calculate();
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                Constants.rateOfInterest,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: rateOfInterestController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,1}')),
-                    NumericRangeFormatter(
-                      min: Constants.minRateOfInterest.toInt(),
-                      max: Constants.maxRateOfInterest.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(
-                        () {
-                          _rateOfInterestSliderValue = double.parse(value);
-                        },
-                      );
-                    }
-                    calculate();
+          spacer(5, null),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _rateOfInterestSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(
+                  () {
+                    _rateOfInterestSliderValue = double.parse(value);
                   },
-                ),
+                );
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}')),
+              NumericRangeFormatter(
+                min: Constants.minRateOfInterest.toInt(),
+                max: Constants.maxRateOfInterest.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: rateOfInterestController,
+            label: Constants.rateOfInterest,
+            hint: Constants.enterRateOfInterest,
           ),
           CustomSlider(
             value: _rateOfInterestSliderValue,
@@ -182,41 +162,36 @@ class _LoanState extends State<Loan> {
               calculate();
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                Constants.loanTenure,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .5,
-                height: 50,
-                child: TextField(
-                  controller: totalYearController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                    NumericRangeFormatter(
-                      min: Constants.minTotalYear.toInt(),
-                      max: Constants.maxTotalYear.toInt(),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value.isEmpty) return;
-                    if (double.tryParse(value) != null) {
-                      setState(
-                        () {
-                          _totalYearSliderValue = double.parse(value);
-                        },
-                      );
-                    }
-                    calculate();
+          spacer(5, null),
+          CustomTextInput(
+            handle: (value) {
+              if (value.isEmpty) {
+                setState(() {
+                  _totalYearSliderValue = 0.0;
+                });
+              }
+              if (double.tryParse(value) != null) {
+                setState(
+                  () {
+                    _totalYearSliderValue = double.parse(value);
                   },
-                ),
+                );
+              }
+              calculate();
+            },
+            inputFormatter: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly,
+              NumericRangeFormatter(
+                min: Constants.minTotalYear.toInt(),
+                max: Constants.maxTotalYear.toInt(),
               ),
             ],
+            textInputType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
+            controller: totalYearController,
+            label: Constants.loanTenure,
+            hint: Constants.enterLoanTenure,
           ),
           CustomSlider(
             value: _totalYearSliderValue,
@@ -235,26 +210,34 @@ class _LoanState extends State<Loan> {
               calculate();
             },
           ),
-          InfoCard(
-            list: [
-              CardItem(
-                key: Constants.principalAmount,
-                value: _totalPrincipal,
-              ),
-              CardItem(
-                key: Constants.totalInterest,
-                value: _totalInterest,
-              ),
-              CardItem(
-                key: Constants.monthlyEMI,
-                value: _monthlyEMI,
-              ),
-              CardItem(
-                key: Constants.totalAmount,
-                value: _totalAmount,
-              ),
-            ],
-          ),
+          spacer(5, null),
+          if (_currentSliderValue != 0.0 &&
+              _rateOfInterestSliderValue != 0.0 &&
+              _totalYearSliderValue != 0.0)
+            Column(
+              children: [
+                InfoCard(
+                  list: [
+                    CardItem(
+                      key: Constants.principalAmount,
+                      value: _totalPrincipal,
+                    ),
+                    CardItem(
+                      key: Constants.totalInterest,
+                      value: _totalInterest,
+                    ),
+                    CardItem(
+                      key: Constants.monthlyEMI,
+                      value: _monthlyEMI,
+                    ),
+                    CardItem(
+                      key: Constants.totalAmount,
+                      value: _totalAmount,
+                    ),
+                  ],
+                ),
+              ],
+            ),
         ],
       ),
     );

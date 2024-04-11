@@ -1,4 +1,5 @@
 import 'package:finance/src/helper/analytics_helper.dart';
+import 'package:finance/src/helper/crashlytics_helper.dart';
 import 'package:finance/src/helper/storage_helper.dart';
 import 'package:finance/src/helper/theme_manager.dart';
 import 'package:finance/src/utils/constants.dart';
@@ -20,10 +21,32 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _initializeApp();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> _initializeApp() async {
     getThemeDetails();
     getNotificationDetails();
     addScreenViewTracking(Constants.settings, widget.runtimeType.toString());
-    WidgetsBinding.instance.addObserver(this);
+    addLog(Constants.screen, Constants.settings);
+  }
+
+  Future<void> addLog(String name, String value) async {
+    addAnalyticsLogger(
+      Constants.settings,
+      {
+        "name": name,
+        "value": value,
+      },
+    );
+    addCrashlyticsLogger(
+      Constants.settings,
+      {
+        "name": name,
+        "value": value,
+      },
+    );
   }
 
   @override
@@ -78,14 +101,16 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        surfaceTintColor: Colors.white,
         title: const Text(Constants.settings),
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(12),
         height: 50.0,
         child: Center(
-            child: Text("${Constants.copyrightLabel}${DateTime.now().year}")),
+          child: Text(
+            "${Constants.copyrightLabel}${DateTime.now().year}",
+          ),
+        ),
       ),
       body: Column(
         children: [
@@ -96,6 +121,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
             ),
             trailing: Switch(
               value: isDarkTheme,
+              activeColor: const Color(0xFF01579B),
               onChanged: (bool value) {
                 Provider.of<ThemeManager>(context, listen: false).toggleTheme();
                 saveData(
@@ -105,6 +131,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                 setState(() {
                   isDarkTheme = !isDarkTheme;
                 });
+                addLog(Constants.button, "Changing Theme");
               },
             ),
           ),
@@ -114,9 +141,11 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
               style: TextStyle(fontSize: 18),
             ),
             trailing: Switch(
+              activeColor: const Color(0xFF01579B),
               value: isNotification,
               onChanged: (bool value) {
                 changeNotificationPermission();
+                addLog(Constants.button, "Notification changes");
               },
             ),
           ),

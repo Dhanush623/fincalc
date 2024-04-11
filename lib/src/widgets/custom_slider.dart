@@ -20,6 +20,7 @@ class CustomSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Slider(
+        activeColor: const Color(0xFF01579B),
         value: value > min ? value : min,
         min: min,
         max: max,

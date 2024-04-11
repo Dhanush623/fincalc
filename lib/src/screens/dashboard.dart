@@ -1,4 +1,5 @@
 import 'package:finance/src/helper/analytics_helper.dart';
+import 'package:finance/src/helper/crashlytics_helper.dart';
 import 'package:finance/src/helper/storage_helper.dart';
 import 'package:finance/src/helper/theme_manager.dart';
 import 'package:finance/src/screens/calculation.dart';
@@ -10,7 +11,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  const Dashboard({
+    super.key,
+  });
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -23,16 +26,44 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
     getThemeDetails(true);
-    addScreenViewTracking("Dashboard", widget.runtimeType.toString());
+    addScreenViewTracking(Constants.dashboard, widget.runtimeType.toString());
     _firebaseMessaging.requestPermission();
-    _firebaseMessaging.getToken().then((token) {
-      debugPrint('FCM Token: $token');
-    });
+    _requestAndPrintFCMToken();
+    _configureFirebaseMessaging();
+  }
+
+  Future<void> _requestAndPrintFCMToken() async {
+    final String? token = await _firebaseMessaging.getToken();
+    debugPrint('FCM Token: $token');
+  }
+
+  Future<void> _configureFirebaseMessaging() async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       debugPrint(message.toString());
       _showNotification(message);
     });
+  }
+
+  Future<void> addLog(String name, String value) async {
+    addAnalyticsLogger(
+      Constants.dashboard,
+      {
+        "name": name,
+        "value": value,
+      },
+    );
+    addCrashlyticsLogger(
+      Constants.dashboard,
+      {
+        "name": name,
+        "value": value,
+      },
+    );
   }
 
   void _showNotification(RemoteMessage message) async {
@@ -124,13 +155,10 @@ class _DashboardState extends State<Dashboard> {
                           size: 16,
                         ),
                         onTap: () {
-                          addAnalyticsLogger(
-                            Constants.firebaseEventKey,
-                            {
-                              "name": Constants.firebasePageEventKey,
-                              "value": Constants.categoryList[index]
-                                  .subCategories[subCategoriesIndex].name
-                            },
+                          addLog(
+                            Constants.screen,
+                            Constants.categoryList[index]
+                                .subCategories[subCategoriesIndex].name,
                           );
                           Navigator.push(
                             context,
