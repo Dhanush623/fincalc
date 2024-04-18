@@ -14,14 +14,16 @@ class _CalculationState extends State<Calculation> {
   @override
   void initState() {
     super.initState();
-    addScreenViewTracking("Calculation", widget.runtimeType.toString());
+    addScreenViewTracking(
+      widget.runtimeType.toString(),
+      widget.subCategories.name,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        surfaceTintColor: Colors.white,
         title: Text(widget.subCategories.name),
       ),
       body: SingleChildScrollView(

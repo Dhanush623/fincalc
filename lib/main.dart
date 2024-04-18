@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:finance/firebase_options.dart';
+import 'package:finance/src/helper/analytics_helper.dart';
 import 'package:finance/src/helper/theme_manager.dart';
 import 'package:finance/src/screens/dashboard.dart';
 import 'package:finance/src/utils/Constants.dart';
@@ -31,6 +32,7 @@ void main() async {
   var initializationSettings =
       InitializationSettings(android: initializationSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  await logAppOpen();
   runApp(const MyApp());
 }
 
