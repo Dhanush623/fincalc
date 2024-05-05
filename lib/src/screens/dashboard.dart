@@ -126,7 +126,12 @@ class _DashboardState extends State<Dashboard> {
         child: ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+          padding: const EdgeInsets.only(
+            left: 8.0,
+            right: 8.0,
+            top: 0.0,
+            bottom: 50.0,
+          ),
           itemCount: Constants.categoryList.length,
           itemBuilder: (context, index) {
             return ExpansionTile(
@@ -139,41 +144,45 @@ class _DashboardState extends State<Dashboard> {
               shape: const Border(),
               children: [
                 Card(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount:
-                        Constants.categoryList[index].subCategories.length,
-                    itemBuilder: (subCategoriesContext, subCategoriesIndex) {
-                      return ListTile(
-                        title: Text(
-                          Constants.categoryList[index]
-                              .subCategories[subCategoriesIndex].name,
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 16,
-                        ),
-                        onTap: () {
-                          addLog(
-                            Constants.screen,
+                  child: SizedBox(
+                    height: Constants.categoryList[index].subCategories.length *
+                        56.0,
+                    child: ListView.builder(
+                      // shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount:
+                          Constants.categoryList[index].subCategories.length,
+                      itemBuilder: (subCategoriesContext, subCategoriesIndex) {
+                        return ListTile(
+                          title: Text(
                             Constants.categoryList[index]
                                 .subCategories[subCategoriesIndex].name,
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Calculation(
-                                subCategories: Constants.categoryList[index]
-                                    .subCategories[subCategoriesIndex],
+                          ),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 16,
+                          ),
+                          onTap: () {
+                            addLog(
+                              Constants.screen,
+                              Constants.categoryList[index]
+                                  .subCategories[subCategoriesIndex].name,
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Calculation(
+                                  subCategories: Constants.categoryList[index]
+                                      .subCategories[subCategoriesIndex],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
-                )
+                ),
               ],
             );
           },

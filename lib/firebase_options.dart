@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -52,12 +49,28 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBQt1IUYxHelufs0kX8v-sDefqQXBRnG2w',
+    appId: '1:4424271195:ios:f7dc777bc93bbd436d467e',
+    messagingSenderId: '4424271195',
+    projectId: 'softly-8f8b0',
+    databaseURL:
+        'https://softly-8f8b0-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'softly-8f8b0.appspot.com',
+    androidClientId:
+        '4424271195-19ep3q0b1one3npme5ttqclii5c0aoo0.apps.googleusercontent.com',
+    iosClientId:
+        '4424271195-o197v6mcg1d97d8mi7e29hvqeelo2hav.apps.googleusercontent.com',
+    iosBundleId: 'com.finance',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBBIOforuTT_BD6fWv8LhacGNv6rM_wbVU',
     appId: '1:4424271195:android:545de76ee1517e456d467e',
     messagingSenderId: '4424271195',
     projectId: 'softly-8f8b0',
-    databaseURL: 'https://softly-8f8b0-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://softly-8f8b0-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'softly-8f8b0.appspot.com',
   );
 }

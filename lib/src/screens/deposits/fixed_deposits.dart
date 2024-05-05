@@ -142,7 +142,7 @@ class _FixedDepositState extends State<FixedDeposit> {
               calculate();
             },
             inputFormatter: <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,1}')),
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
               NumericRangeFormatter(
                 min: Constants.minRateOfInterest.toInt(),
                 max: Constants.maxRateOfInterest.toInt(),
@@ -164,8 +164,8 @@ class _FixedDepositState extends State<FixedDeposit> {
               setState(
                 () {
                   _rateOfInterestSliderValue =
-                      double.parse(value.toStringAsFixed(1));
-                  rateOfInterestController.text = value.toStringAsFixed(1);
+                      double.parse(value.toStringAsFixed(2));
+                  rateOfInterestController.text = value.toStringAsFixed(2);
                 },
               );
               calculate();

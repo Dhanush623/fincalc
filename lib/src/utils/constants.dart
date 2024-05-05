@@ -99,6 +99,10 @@ class Constants {
   static const int amountSliderDivision = 10000;
   static const int totalYearDivision = 29;
   static const int totalYearDivisionInvestment = 49;
+  static const String darwinNotificationCategoryText = 'textCategory';
+  static const String darwinNotificationCategoryPlain = 'plainCategory';
+  static const String navigationActionId = 'id_3';
+  static const String platform = 'platform';
   static List<Category> categoryList = [
     Category(
       id: 1,
