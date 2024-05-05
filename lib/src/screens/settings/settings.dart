@@ -64,16 +64,17 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
   }
 
   getNotificationDetails() async {
-    PermissionStatus status = await Permission.notification.status;
-    if (status.isGranted) {
-      setState(() {
-        isNotification = true;
-      });
-    } else {
-      setState(() {
-        isNotification = false;
-      });
-    }
+    await Permission.notification.status.then((PermissionStatus status) {
+      if (status.isGranted) {
+        setState(() {
+          isNotification = true;
+        });
+      } else {
+        setState(() {
+          isNotification = false;
+        });
+      }
+    });
   }
 
   changeNotificationPermission() async {
