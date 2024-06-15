@@ -8,12 +8,108 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:4424271195:android:42f333a6ac42c0036d467e",
+        "android_client_info": {
+          "package_name": "com.resprotech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "4424271195-4711cqqspsegqfdigd7kb8qeu1voq30c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.resprotech",
+            "certificate_hash": "0950430474a78d027582490a219894aef8a79226"
+          }
+        },
+        {
+          "client_id": "4424271195-epre7gcl1285logn6hcp2gt5k09cf9c8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBIOforuTT_BD6fWv8LhacGNv6rM_wbVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "4424271195-epre7gcl1285logn6hcp2gt5k09cf9c8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "4424271195-12q9ei17rtqu1ki0j37pi33pb80hkllu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.softly.totodo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:4424271195:android:545de76ee1517e456d467e",
         "android_client_info": {
           "package_name": "com.softly.finance"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "4424271195-1vtgbsrskg438iolkojpajbrhumpdaej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softly.finance",
+            "certificate_hash": "a0cea03c7d4f95af8f0530207bb1bd2bffb539c2"
+          }
+        },
+        {
+          "client_id": "4424271195-epre7gcl1285logn6hcp2gt5k09cf9c8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBIOforuTT_BD6fWv8LhacGNv6rM_wbVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "4424271195-epre7gcl1285logn6hcp2gt5k09cf9c8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "4424271195-12q9ei17rtqu1ki0j37pi33pb80hkllu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.softly.totodo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4424271195:android:0d7a82f9a19434716d467e",
+        "android_client_info": {
+          "package_name": "com.softly.todo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "4424271195-bkkeiebnastm8d23jetlq4f6u4v1qhsf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softly.todo",
+            "certificate_hash": "3f6171c63b82e3a797235cdd37f91232b5a2d103"
+          }
+        },
         {
           "client_id": "4424271195-epre7gcl1285logn6hcp2gt5k09cf9c8.apps.googleusercontent.com",
           "client_type": 3
@@ -51,11 +147,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "4424271195-dpibiqo19tpf2iri886v4mapog8v3bot.apps.googleusercontent.com",
+          "client_id": "4424271195-8msf0cnpc8jvoc0i2t8ggic4890dj0ni.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.softly.totodo",
-            "certificate_hash": "1dddaa9916638cc7ac93947749db159f3dd2d728"
+            "certificate_hash": "3f6171c63b82e3a797235cdd37f91232b5a2d103"
           }
         },
         {
