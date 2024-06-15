@@ -2,8 +2,11 @@ import 'package:finance/src/helper/analytics_helper.dart';
 import 'package:finance/src/helper/crashlytics_helper.dart';
 import 'package:finance/src/helper/storage_helper.dart';
 import 'package:finance/src/helper/theme_manager.dart';
+import 'package:finance/src/screens/terms_and_conditions.dart';
 import 'package:finance/src/utils/constants.dart';
+import 'package:finance/src/widgets/my_banner_ad.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -98,6 +101,15 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> navigateToTermsAndConditions() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TermsAndConditions(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,12 +118,17 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(12),
-        height: 50.0,
-        child: Center(
-          child: Text(
+        height: AdSize.banner.height.toDouble() + 50.0,
+        child: Column(children: [
+          Text(
             "${Constants.copyrightLabel}${DateTime.now().year}",
           ),
-        ),
+          SizedBox(
+            width: AdSize.banner.width.toDouble(),
+            height: AdSize.banner.height.toDouble(),
+            child: const MyBannerAdWidget(),
+          ),
+        ]),
       ),
       body: Column(
         children: [
@@ -147,6 +164,16 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                 addLog(Constants.button, "Notification changes");
               },
             ),
+          ),
+          ListTile(
+            title: const Text(
+              Constants.termsConditions,
+              style: TextStyle(fontSize: 18),
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios_rounded,
+            ),
+            onTap: navigateToTermsAndConditions,
           ),
         ],
       ),
