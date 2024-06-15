@@ -103,6 +103,10 @@ class Constants {
   static const String darwinNotificationCategoryPlain = 'plainCategory';
   static const String navigationActionId = 'id_3';
   static const String platform = 'platform';
+  static const String adUnitId = 'ca-app-pub-8923335269347910/3249792139';
+  static const String termsConditions = "Terms & Conditions";
+  static const String fincalcPrivacyPolicy =
+      "https://dhanush623.github.io/fincalc_privacy_policy.html";
   static List<Category> categoryList = [
     Category(
       id: 1,

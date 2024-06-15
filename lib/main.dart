@@ -10,7 +10,9 @@ import 'package:finance/src/utils/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -103,6 +105,8 @@ void main() async {
   );
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   await logAppOpen();
+  await rootBundle.loadString('assets/app-ads.txt');
+  unawaited(MobileAds.instance.initialize());
   runApp(const MyApp());
 }
 
@@ -118,7 +122,9 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: Constants.finCalc,
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue,
+            ),
             useMaterial3: true,
           ),
           debugShowCheckedModeBanner: false,

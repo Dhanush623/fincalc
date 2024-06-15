@@ -5,9 +5,11 @@ import 'package:finance/src/helper/theme_manager.dart';
 import 'package:finance/src/screens/calculation.dart';
 import 'package:finance/src/screens/settings/settings.dart';
 import 'package:finance/src/utils/constants.dart';
+import 'package:finance/src/widgets/my_banner_ad.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 class Dashboard extends StatefulWidget {
@@ -122,71 +124,81 @@ class _DashboardState extends State<Dashboard> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.only(
-            left: 8.0,
-            right: 8.0,
-            top: 0.0,
-            bottom: 50.0,
-          ),
-          itemCount: Constants.categoryList.length,
-          itemBuilder: (context, index) {
-            return ExpansionTile(
-              title: Text(
-                Constants.categoryList[index].name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(
+                left: 8.0,
+                right: 8.0,
+                top: 0.0,
+                bottom: 16.0,
               ),
-              shape: const Border(),
-              children: [
-                Card(
-                  child: SizedBox(
-                    height: Constants.categoryList[index].subCategories.length *
-                        56.0,
-                    child: ListView.builder(
-                      // shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount:
-                          Constants.categoryList[index].subCategories.length,
-                      itemBuilder: (subCategoriesContext, subCategoriesIndex) {
-                        return ListTile(
-                          title: Text(
-                            Constants.categoryList[index]
-                                .subCategories[subCategoriesIndex].name,
-                          ),
-                          trailing: const Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 16,
-                          ),
-                          onTap: () {
-                            addLog(
-                              Constants.screen,
-                              Constants.categoryList[index]
-                                  .subCategories[subCategoriesIndex].name,
-                            );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Calculation(
-                                  subCategories: Constants.categoryList[index]
-                                      .subCategories[subCategoriesIndex],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
+              itemCount: Constants.categoryList.length,
+              itemBuilder: (context, index) {
+                return ExpansionTile(
+                  title: Text(
+                    Constants.categoryList[index].name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
-              ],
-            );
-          },
-        ),
+                  shape: const Border(),
+                  children: [
+                    Card(
+                      child: SizedBox(
+                        height:
+                            Constants.categoryList[index].subCategories.length *
+                                56.0,
+                        child: ListView.builder(
+                          // shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: Constants
+                              .categoryList[index].subCategories.length,
+                          itemBuilder:
+                              (subCategoriesContext, subCategoriesIndex) {
+                            return ListTile(
+                              title: Text(
+                                Constants.categoryList[index]
+                                    .subCategories[subCategoriesIndex].name,
+                              ),
+                              trailing: const Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 16,
+                              ),
+                              onTap: () {
+                                addLog(
+                                  Constants.screen,
+                                  Constants.categoryList[index]
+                                      .subCategories[subCategoriesIndex].name,
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Calculation(
+                                      subCategories: Constants
+                                          .categoryList[index]
+                                          .subCategories[subCategoriesIndex],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          SizedBox(
+            width: AdSize.banner.width.toDouble(),
+            height: AdSize.banner.height.toDouble(),
+            child: const MyBannerAdWidget(),
+          ),
+        ],
       ),
     );
   }
