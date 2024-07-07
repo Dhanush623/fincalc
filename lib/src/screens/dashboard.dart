@@ -112,6 +112,7 @@ class _DashboardState extends State<Dashboard> {
         title: const Text(Constants.finCalc),
         actions: [
           IconButton(
+            tooltip: Constants.settings,
             onPressed: () {
               Navigator.push(
                 context,

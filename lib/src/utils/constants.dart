@@ -22,6 +22,7 @@ class Constants {
   static const String notifications = "Notifications";
   static const String cagr = "CAGR";
   static const String emi = "EMI";
+  static const String personalLoan = "Personal Loan";
   static const String carBikeLoanEMI = "Car & Bike Loan EMI";
   static const String homeLoanEMI = "Home Loan EMI";
   static const String gst = "GST";
@@ -137,6 +138,11 @@ class Constants {
         SubCategories(
           id: 201,
           name: homeLoanEMI,
+          widget: const Loan(),
+        ),
+        SubCategories(
+          id: 204,
+          name: personalLoan,
           widget: const Loan(),
         ),
         SubCategories(
