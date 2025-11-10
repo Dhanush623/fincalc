@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.softly.finance"
-    compileSdkVersion 34
+    compileSdkVersion 36
     ndkVersion = "27.0.12077973" // Add this line
 
     compileOptions {
@@ -62,7 +62,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 34
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -83,7 +83,7 @@ flutter {
 
 dependencies {
     implementation 'com.android.support:multidex:1.0.3'
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 }
 
 apply plugin: 'com.google.gms.google-services'

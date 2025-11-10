@@ -7,6 +7,7 @@ import 'package:finance/src/screens/settings/settings.dart';
 import 'package:finance/src/utils/constants.dart';
 import 'package:finance/src/widgets/my_banner_ad.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -40,8 +41,21 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> _requestAndPrintFCMToken() async {
-    final String? token = await _firebaseMessaging.getToken();
-    debugPrint('FCM Token: $token');
+    try {
+      final String? token = await _firebaseMessaging.getToken();
+      debugPrint('FCM Token: $token');
+    } catch (e, s) {
+      // Some devices (or configurations without Google Play services)
+      // may throw when trying to obtain an Instance ID / FCM token
+      // (e.g. java.io.IOException: MISSING_INSTANCEID_SERVICE). Catch
+      // and log the error instead of letting it crash the app.
+      debugPrint('Failed to get FCM token: $e');
+      addCrashlyticsLogger(Constants.dashboard, {
+        'error': e.toString(),
+      });
+      FirebaseCrashlytics.instance
+          .recordError(e, s, reason: 'FCM getToken failed', fatal: false);
+    }
   }
 
   Future<void> _configureFirebaseMessaging() async {

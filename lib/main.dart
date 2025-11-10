@@ -30,6 +30,9 @@ void main() async {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   // Initialize settings
+  // Use the app's actual launcher icon resource. The Android manifest
+  // uses @mipmap/launcher_icon, so use the same here to avoid
+  // "resource not found" errors from the notifications plugin.
   var initializationSettingsAndroid =
       const AndroidInitializationSettings('@mipmap/launcher_icon');
   final List<DarwinNotificationCategory> darwinNotificationCategories =
